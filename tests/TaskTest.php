@@ -105,6 +105,29 @@
              //Assert
              $this->assertEquals(true, is_numeric($result));
          }
+         function testSetId()
+         {
+           //Arrange
+           $id = 1;
+           $description = "Wash the puppy";
+           $test_task = new Task($description, $id);
+           //Act
+           $test_task->setId(2);
+           //Assert
+           $result = $test_task->getId();
+           $this->assertEquals(2, $result);
+         }
+         function testSaveSetId()
+         {
+           //Arrange
+           $description = "Wash the puppy";
+           $id = null;
+           $test_task = new Task($description, $id);
+           //Act
+           $test_task->save();
+           //Assert
+           $this->assertEquals(true, is_numeric($test_task->getId()));
+         }
          function test_find()
          {
            //Arrange
@@ -127,23 +150,6 @@
            //Assert
            $this->assertEquals($test_task, $result);
          }
-         function test_getCategoryId()
-         {
-           //Arrange
-           $name = "Home stuff";
-           $id = null;
-           $test_category = new Category($name, $id);
-           $test_category->save();
-
-           $description = "Wash the dog";
-           $due = "2016-03-02";
-           $test_task = new Task($description, $id, $due);
-           $test_task->save();
-           //Act
-           $result = $test_task->getCategoryId();
-           //Assert
-           $this->assertEquals(true, is_numeric($result));
-         }
          function testAddCategory()
          {
            //Arrange
@@ -154,14 +160,15 @@
 
            $description = "File reports";
            $id2 = 2;
-           $test_task = new Task($description, $id2);
+           $due = "2019-03-03";
+           $test_task = new Task($description, $id2, $due);
            $test_task->save();
            //Act
            $test_task->addCategory($test_category);
            //Assert
-           $this->assertEquals($test_task->getCategories(), [$test_category]);
+           $this->assertEquals($test_task->categories(), [$test_category]);
          }
-         function testGetCategories()
+         function testCategories()
          {
            //Arrange
            $name = "Work stuff";
@@ -176,13 +183,33 @@
 
            $description = "File reports";
            $id3 = 3;
-           $test_task = new Task($description, $id3);
+           $due = "2019-02-02";
+           $test_task = new Task($description, $id3, $due);
            $test_task->save();
            //Act
            $test_task->addCategory($test_category);
            $test_task->addCategory($test_category2);
            //Assert
-           $this->assertEquals($test_task->getCategories(), [$test_category, $test_cateogry2]);
+           $this->assertEquals($test_task->categories(), [$test_category, $test_category2]);
+         }
+         function testDelete()
+         {
+           //Arrange
+           $name = "Work stuff";
+           $id = 1;
+           $test_category = new Category($name, $id);
+           $test_category->save();
+
+           $description = "File reports";
+           $id2 = 2;
+           $due = "2019-03-03";
+           $test_task = new Task($description, $id2, $due);
+           $test_task->save();
+           //Act
+           $test_task->addCategory($test_category);
+           $test_task->delete();
+           //Assert
+           $this->assertEquals([], $test_category->tasks());
          }
 
      }

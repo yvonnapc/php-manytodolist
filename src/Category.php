@@ -62,13 +62,13 @@
         function delete()
         {
             $GLOBALS['DB']->exec("DELETE FROM categories WHERE id = {$this->getId()};");
-            $GLOBALS['DB']->exec("DELETE FROM tasks WHERE category_id = {$this->getId()};");
+            $GLOBALS['DB']->exec("DELETE FROM categories_tasks WHERE category_id = {$this->getId()};");
         }
         function addTask($task)
         {
             $GLOBALS['DB']->exec("INSERT INTO categories_tasks (category_id, task_id) VALUES ({$this->getId()}, {$task->getId()});");
         }
-        function getTasks()
+        function tasks()
         {
             $query = $GLOBALS['DB']->query("SELECT task_id FROM categories_tasks WHERE category_id = {$this->getId()};");
             $task_ids = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -81,7 +81,8 @@
 
                 $description = $returned_task[0]['description'];
                 $id = $returned_task[0]['id'];
-                $new_task = new Task($description, $id);
+                $due = $returned_task[0]['due'];
+                $new_task = new Task($description, $id, $due);
                 array_push($tasks, $new_task);
           }
           return $tasks;

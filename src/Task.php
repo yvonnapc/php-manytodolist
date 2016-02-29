@@ -3,25 +3,19 @@ class Task
 {
     private $description;
     private $id;
-    private $due;
 
-    function __construct($description, $id = null, $due)
+    function __construct($description, $id = null)
     {
       $this->description = $description;
       $this->id = $id;
-      $this->due = $due;
+    }
+    function setId($new_id)
+    {
+      $this->id = (int) $new_id;
     }
     function getId()
     {
       return $this->id;
-    }
-    function setDue($new_due)
-    {
-      $this->due = (string) $new_due;
-    }
-    function getDue()
-    {
-      return $this->due;
     }
     function setDescription($new_description)
     {
@@ -33,7 +27,7 @@ class Task
     }
     function save()
     {
-      $GLOBALS['DB']->exec("INSERT INTO tasks (description, due) VALUES ('{$this->getDescription()}', '{$this->getDue()}');");
+      $GLOBALS['DB']->exec("INSERT INTO tasks (description) VALUES ('{$this->getDescription()}');");
       $this->id = $GLOBALS['DB']->lastInsertId();
     }
     static function getAll()
@@ -44,8 +38,7 @@ class Task
       foreach($returned_tasks as $task) {
           $description = $task['description'];
           $id = $task['id'];
-          $due = $task['due'];
-          $new_task = new Task($description, $id, $due);
+          $new_task = new Task($description, $id);
           array_push($tasks, $new_task);
       }
       return $tasks;
@@ -72,7 +65,7 @@ class Task
     {
       $GLOBALS['DB']->exec("INSERT INTO categories_tasks (category_id, task_id) VALUES ({$category->getId()}, {$this->getId()});");
     }
-    function getCategories()
+    function categories()
     {
       $query = $GLOBALS['DB']->query("SELECT category_id FROM categories_tasks WHERE task_id = {$this->getId()};");
       $category_ids = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -90,6 +83,11 @@ class Task
         array_push($categories, $new_category);
       }
       return $categories;
+    }
+    function delete()
+    {
+      $GLOBALS['DB']->exec("DELETE FROM tasks WHERE id = {$this->getId()};");
+      $GLOBALS['DB']->exec("DELETE FROM categories_tasks WHERE task_id = {$this->getId()};");
     }
 }
 ?>
