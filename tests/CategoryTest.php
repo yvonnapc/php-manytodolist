@@ -8,7 +8,7 @@
     require_once "src/Category.php";
     require_once "src/Task.php";
 
-    $server = 'mysql:host=localhost;dbname=categories_test';
+    $server = 'mysql:host=localhost;dbname=to_do_test';
     $username = 'root';
     $password = 'root';
     $DB = new PDO($server, $username, $password);
@@ -125,16 +125,33 @@
           $test_category_id = $test_category->getId();
 
           $description = "Email client";
-          $test_task = new Task($description, $id, $test_category_id);
+          $due = "2016-03-02";
+          $test_task = new Task($description, $id, $test_category_id, $due);
           $test_task->save();
 
           $description2 = "Meet with boss";
-          $test_task2 = new Task($description2, $id, $test_category_id);
+          $due = "2016-03-02";
+          $test_task2 = new Task($description2, $id, $test_category_id, $due);
           $test_task2->save();
           //Act
           $result = $test_category->getTasks();
           //Assert
           $this->assertEquals([$test_task, $test_task2], $result);
+        }
+        function testUpdate()
+        {
+          //Arrange
+          $name = "Home stuff";
+          $id = null;
+          $test_category = new Category($name, $id);
+          $test_category->save();
+
+          $new_name = "Work stuff";
+
+          //Act
+          $test_category->update($new_name);
+          //Assert
+          $this->assertEquals("Work stuff", $test_category->getName());
         }
     }
 

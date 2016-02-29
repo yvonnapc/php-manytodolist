@@ -51,7 +51,7 @@ class Task
           $description = $task['description'];
           $id = $task['id'];
           $category_id = $task['category_id'];
-          $due = $task['dueDate'];
+          $due = $task['due'];
           $new_task = new Task($description, $id, $category_id, $due);
           array_push($tasks, $new_task);
       }
@@ -75,5 +75,6 @@ class Task
           }
       } return $found_task;
     }
+    
 }
 ?>
