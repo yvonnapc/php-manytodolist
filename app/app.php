@@ -68,5 +68,11 @@
         return $app['twig']->render('category.html.twig', array('category' => $category, 'tasks' => $category->getTasks()));
     });
 
+    $app->delete("/categories/{id}", function($id) use ($app) {
+        $category = Category::find($id);
+        $category->delete();
+        return $app['twig']->render('index.html.twig', array('categories' => Category::getAll()));
+    });
+
     return $app;
  ?>
